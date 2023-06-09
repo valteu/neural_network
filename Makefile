@@ -1,0 +1,19 @@
+CC = g++
+CFLAGS = -std=c++11
+TARGET = main
+SRCS = main.cpp Layer.cpp
+OBJS = $(SRCS:.cpp=.o)
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+
