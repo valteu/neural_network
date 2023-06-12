@@ -25,7 +25,7 @@ Layer::Layer(int n_neurons, int inSize){
 
   void Layer::forward(double* inputData){
     double temp = 0;
-    for (int n = 0; n < numNeurons; ++n){
+    for (int n = 0; n < numNeurons; ++n){ //calculate cross product and add bias
       for (int i = 0; i < inputSize; ++i){
         temp += weights[n][i] * inputData[i];
       }
@@ -38,6 +38,7 @@ Layer::Layer(int n_neurons, int inSize){
       a_output[i] = max<double>(data[i], 0);
     }
    }
+
   Layer::~Layer(){
     for (int i = 0; i < numNeurons; ++i){
       delete[] weights[i];
