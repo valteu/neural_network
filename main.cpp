@@ -7,7 +7,7 @@ double dataFunction(double x){ // intervall [0, 6] interesting
   return sin(x) + 0.5 * cos(2 * x) + 0.3 * sin(3*x) + 0.2 * cos(4* x) + 0.1 * sin(5*x) + 0.1 * cos(6*x);
 }
 
-double* createData(int samples){
+double* createData(int samples){ //create data array of trainigsdata
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<double> distribution(1.0, 0.6);
