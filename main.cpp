@@ -13,12 +13,26 @@ double* createData(int samples){ //create data array of trainigsdata
   std::uniform_real_distribution<double> distribution(1.0, 0.6);
 
   double* data = new double[samples * 2];
-  for (int i = 0; i+1 < samples; i += 2){
+  for (int i = 0; i < samples; ++i){
     double x = distribution(gen);
-    data[i] = x;
-    data[i+1] = dataFunction(x);
+    data[i * 2] = x;
+    data[i * 2 + 1] = dataFunction(x);
   }
   return data;
+}
+
+double lossFunction(double* data, double* nn_out, int data_idx){
+  /*int size = sizeof(nn_out) / sizeof(nn_out[0]); 
+  size = 1;
+  printf("%d\n", size);
+  double* loss = new double[2];
+  printf("g\n");
+  for (int i = 0; i < size; ++i){
+    loss[i] = (nn_out[i] - data[data_idx + i]) * (nn_out[i] - data[data_idx + i]);
+  }
+  */
+  double loss = (data[0] - nn_out[0]) * (data[0] - nn_out[0]);
+  return loss;
 }
 
 int main(){
@@ -31,7 +45,7 @@ int main(){
   }
   Layer H1(4, 2);
   Layer H2(4, 4);
-  Layer Out(2, 4);
+  Layer Out(1, 4);
 
   H1.forward(tdata);
   //printf("%lf \n", H1.f_output[0]);
@@ -43,7 +57,14 @@ int main(){
 
   Out.forward(H2.a_output);
   Out.relu(Out.f_output);
+  printf("f\n");
   printf("%lf \n", Out.a_output[0]);
-  printf("%lf \n", Out.a_output[1]);
+  //printf("%lf \n", Out.a_output[1]);
+  double loss = lossFunction(tdata, Out.a_output, 0);
+  printf("%lf \n", loss);
+  //printf("%lf \n", loss[1]);
+  
   delete[] tdata;
+  //delete[] loss;
+  return 0;
 }
