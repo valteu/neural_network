@@ -18,7 +18,7 @@ Layer::Layer(int inp_size, int num_neurons){
       }
     }
   biases = new double[numNeurons];
-    for (int i = 0; i < inputSize; ++i){
+    for (int i = 0; i < numNeurons; ++i){
       biases[i] = (double)rand() / RAND_MAX - 0.5;
     }
   }

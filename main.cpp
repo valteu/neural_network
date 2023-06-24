@@ -14,7 +14,7 @@ double dataFunction(double x){ // intervall [0, 6] interesting
 double* createData(int samples){ //create data array of trainigsdata
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> distribution(1.0, 0.6);
+  std::uniform_real_distribution<double> distribution(1.0, 6.0);
 
   double* data = new double[samples];
   for (int i = 0; i < samples; ++i){
@@ -43,14 +43,19 @@ int main(){
   double* tdata = createData(BATCHES);
   double loss;
 
+  Layer In(1, BATCHES);
   Layer H1(1, 4);
   Layer H2(4, 4);
   Layer Out(4, 1);
+
+  Layer Layers[] = {In, H1, H2, Out};
+
+  In.a_output = tdata;
   // forward
   for (int i = 0; i < BATCHES; ++i){
     H1.forward(tdata);
     H1.sigmoid(H1.f_output);
-
+    printf("1\n");
     H2.forward(H1.a_output);
     H2.sigmoid(H2.f_output);
 
@@ -59,28 +64,32 @@ int main(){
     loss = lossFunction(dataFunction(tdata[i]), Out.a_output, 0);
     printf("Loss: %lf", loss);
 
+    printf("2\n");
     // Backpropagation
-    Layer Layers[] = {H1, H2, Out};
     double delta = 2 * (tdata[i] - Out.a_output[i]);
     double new_delta = 0;
-    for (int layer = NUM_LAYERS; layer > 0; --layer){
+
+    for (int layer = NUM_LAYERS; layer > 1; --layer){
+    printf("3\n");
       for (int neuron = 0; neuron < Layers[layer].numNeurons; ++neuron){
         for (int weight = 0; weight < Layers[layer].inputSize; ++weight){
+          printf("4\n");
          Layers[layer].weights[neuron][weight] *= delta * LEARNING_RATE * Layers[layer-1].a_output[neuron];
         }
       }
       for (int bias = 0; bias < Out.numNeurons; ++ bias){
         Layers[layer].biases[bias] *= delta * LEARNING_RATE;
       }
+    printf("4\n");
       for (int neuron = 0; neuron < Layers[layer].numNeurons; ++neuron){
         for (int weight = 0; weight < Layers[layer].inputSize; ++weight){
           new_delta += delta * Layers[layer].weights[neuron][weight] * Layers[layer].a_output[neuron] * (1 - Layers[layer].a_output[neuron]);
         }
       }
+      delta = new_delta;
+      new_delta = 0;
     }
-
-    loss = lossFunction(dataFunction(tdata[i]), Out.a_output, 0);
-    printf("bLoss: %lf\n", loss);
+  printf("NEXT\n");
   }
   delete[] tdata;
   //delete[] loss;
