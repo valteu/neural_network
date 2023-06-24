@@ -17,7 +17,7 @@ class Layer{
     int numNeurons;
     int inputSize;
 
-    Layer(int neurons, int inSize);
+    Layer(int, int);
     void forward(double* input);
     void relu(double* data);
     ~Layer();
