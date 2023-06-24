@@ -37,8 +37,12 @@ Layer::Layer(int inp_size, int num_neurons){
     for (int i = 0; i < numNeurons; ++i){
       a_output[i] = max<double>(data[i], 0);
     }
-   }
-
+  }
+  void Layer::sigmoid(double* data){
+    for (int i = 0; i < numNeurons; ++i){
+      a_output[i] = 1 / (1 + exp(data[i]));
+    }
+  }
   Layer::~Layer(){
     for (int i = 0; i < numNeurons; ++i){
       delete[] weights[i];
