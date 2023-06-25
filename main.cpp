@@ -46,10 +46,13 @@ int main(){
   for (int i = 0; i < BATCHES; ++i){
     H1.forward(tdata);
     H1.sigmoid(H1.f_output);
+
     H2.forward(H1.a_output);
     H2.sigmoid(H2.f_output);
+
     Out.forward(H2.a_output);
     Out.sigmoid(Out.f_output);
+
     loss = lossFunction(dataFunction(tdata[i]), Out.a_output, 0);
     printf("Loss: %lf\n", loss);
 
@@ -63,15 +66,14 @@ int main(){
 
       for (int neuron = 0; neuron < curr.numNeurons; ++neuron){ // update weights
         for (int inp = 0; inp < curr.inputSize; ++inp){
-
-          curr.weights[neuron][inp] -= curr.delta[neuron] * LEARNING_RATE * prev.a_output[inp]; 
+          curr.weights[neuron][inp] -= curr.delta[neuron] * LEARNING_RATE * prev.a_output[neuron]; 
         }
         curr.biases[neuron] -= curr.delta[neuron] * LEARNING_RATE; // update bias
       }
       for (int neuron = 0; neuron < prev.numNeurons; ++neuron){ //calculate delta for prev layer
         prev.delta[neuron] = 0.0;
        for (int curr_neurons = 0; curr_neurons < curr.numNeurons; ++curr_neurons){
-         prev.delta[neuron] += curr.delta[curr_neurons] * curr.weights[curr_neurons][neuron] * (1 - curr.a_output[curr_neurons]);
+         prev.delta[neuron] += curr.delta[curr_neurons] * curr.weights[curr_neurons][neuron] * prev.a_output[curr_neurons] * (1 - prev.a_output[curr_neurons]);
        } 
       }
     }
