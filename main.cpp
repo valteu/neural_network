@@ -51,40 +51,30 @@ int main(){
     Out.forward(H2.a_output);
     Out.sigmoid(Out.f_output);
     loss = lossFunction(dataFunction(tdata[i]), Out.a_output, 0);
-    printf("Loss: %lf", loss);
+    printf("Loss: %lf\n", loss);
 
     // Backpropagation
     for (int o_neuron = 0; o_neuron < Out.numNeurons; ++o_neuron){
       Out.delta[o_neuron] = 2 * (tdata[i] - Out.a_output[o_neuron]); // delta for output neuron
-      std::cout << "delta: "<< Out.delta[o_neuron] << std::endl;
     }
     for (int layer = NUM_LAYERS - 1; layer > 2; --layer){ //iterates each layer
       Layer curr = Layers[layer];
       Layer prev = Layers[layer - 1]; //prev is previous layer in list and forward path but next layer in iteraion
 
-      std::cout << "3.5" << std::endl;
       for (int neuron = 0; neuron < curr.numNeurons; ++neuron){ // update weights
-      std::cout << "3.6" << std::endl;
         for (int inp = 0; inp < curr.inputSize; ++inp){
-        std::cout << curr.delta[neuron] << " "<< neuron<< std::endl;
-        std::cout << prev.a_output[neuron] << " "<< neuron << " " << inp << std::endl;
-        std::cout << curr.weights[0][0] << " "<< neuron<< std::endl;
 
-          curr.weights[neuron][inp] -= curr.delta[neuron] * LEARNING_RATE * prev.a_output[neuron]; 
-          std::cout << "3.8" << std::endl;
+          curr.weights[neuron][inp] -= curr.delta[neuron] * LEARNING_RATE * prev.a_output[inp]; 
         }
         curr.biases[neuron] -= curr.delta[neuron] * LEARNING_RATE; // update bias
       }
-      std::cout << "4" << std::endl;
       for (int neuron = 0; neuron < prev.numNeurons; ++neuron){ //calculate delta for prev layer
+        prev.delta[neuron] = 0.0;
        for (int curr_neurons = 0; curr_neurons < curr.numNeurons; ++curr_neurons){
          prev.delta[neuron] += curr.delta[curr_neurons] * curr.weights[curr_neurons][neuron] * (1 - curr.a_output[curr_neurons]);
-         std::cout << "delta: "<< prev.delta[neuron] << std::endl;
        } 
       }
     }
   }
-  delete[] tdata;
-  //delete[] loss;
   return 0;
 }

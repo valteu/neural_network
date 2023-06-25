@@ -27,13 +27,17 @@ Layer::Layer(int inp_size, int num_neurons){
 Layer::Layer(const Layer &other){
     numNeurons = other.numNeurons;
     inputSize = other.inputSize;
+
     f_output = new double[numNeurons];
     a_output = new double[numNeurons];
     delta = new double[numNeurons];
 
-    f_output = other.f_output;
-    a_output = other.a_output;
-    delta = other.delta;
+    for (int i = 0; i < numNeurons; ++i){
+      f_output[i] = other.f_output[i];
+      a_output[i] = other.a_output[i];
+      delta[i] = other.delta[i];
+
+    }
 
     weights = new double*[numNeurons];
       for (int i = 0; i < numNeurons; ++i){
