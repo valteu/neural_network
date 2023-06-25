@@ -25,15 +25,6 @@ double* createData(int samples){ //create data array of trainigsdata
 }
 
 double lossFunction(double data, double* nn_out, int data_idx){
-  /*int size = sizeof(nn_out) / sizeof(nn_out[0]); 
-  size = 1;
-  printf("%d\n", size);
-  double* loss = new double[2];
-  printf("g\n");
-  for (int i = 0; i < size; ++i){
-    loss[i] = (nn_out[i] - data[data_idx + i]) * (nn_out[i] - data[data_idx + i]);
-  }
-  */
   double loss = (data - nn_out[0]) * (data - nn_out[0]);
   return loss;
 }
@@ -55,41 +46,39 @@ int main(){
   for (int i = 0; i < BATCHES; ++i){
     H1.forward(tdata);
     H1.sigmoid(H1.f_output);
-    printf("1\n");
+    //printf("1\n");
     H2.forward(H1.a_output);
     H2.sigmoid(H2.f_output);
-
+    std::cout << "1" << std::endl;
     Out.forward(H2.a_output);
     Out.sigmoid(Out.f_output);
     loss = lossFunction(dataFunction(tdata[i]), Out.a_output, 0);
-    printf("Loss: %lf", loss);
-
-    printf("2\n");
+    //printf("Loss: %lf", loss);
+    //printf("1\n");
+    //printf("2\n");
     // Backpropagation
-    double delta = 2 * (tdata[i] - Out.a_output[i]);
-    double new_delta = 0;
-
-    for (int layer = NUM_LAYERS; layer > 1; --layer){
-    printf("3\n");
-      for (int neuron = 0; neuron < Layers[layer].numNeurons; ++neuron){
-        for (int weight = 0; weight < Layers[layer].inputSize; ++weight){
-          printf("4\n");
-         Layers[layer].weights[neuron][weight] *= delta * LEARNING_RATE * Layers[layer-1].a_output[neuron];
-        }
-      }
-      for (int bias = 0; bias < Out.numNeurons; ++ bias){
-        Layers[layer].biases[bias] *= delta * LEARNING_RATE;
-      }
-    printf("4\n");
-      for (int neuron = 0; neuron < Layers[layer].numNeurons; ++neuron){
-        for (int weight = 0; weight < Layers[layer].inputSize; ++weight){
-          new_delta += delta * Layers[layer].weights[neuron][weight] * Layers[layer].a_output[neuron] * (1 - Layers[layer].a_output[neuron]);
-        }
-      }
-      delta = new_delta;
-      new_delta = 0;
+    Layer Out = Layers[-1];
+    std::cout << "2" << std::endl;
+    for (int o_neuron = 0; o_neuron < Out.numNeurons; ++o_neuron){
+      Out.delta[o_neuron] = 2 * (tdata[i] - Out.a_output[o_neuron]); // delta for output neuron
     }
-  printf("NEXT\n");
+    std::cout << "3" << std::endl;
+    for (int layer = NUM_LAYERS; layer > 1; --layer){ //iterates each layer
+      Layer curr = Layers[layer];
+      Layer prev = Layers[layer - 1]; //prev is previous layer in list and forward path but next layer in iteraion
+      for (int neuron = 0; neuron < curr.numNeurons; ++neuron){ // update weights
+        for (int inp = 0; inp < curr.inputSize; ++inp){
+          curr.weights[neuron][inp] -= curr.delta[neuron] * LEARNING_RATE * prev.a_output[neuron]; 
+        }
+        curr.biases[neuron] -= curr.delta[neuron] * LEARNING_RATE; // update bias
+      }
+    std::cout << "4" << std::endl;
+      for (int neuron = 0; neuron < prev.numNeurons; ++neuron){ //calculate delta for prev layer
+       for (int curr_neurons = 0; curr_neurons < curr.numNeurons; ++curr_neurons){
+         prev.delta[neuron] += curr.delta[curr_neurons] * curr.weights[curr_neurons][neuron] * (1 - curr.a_output[curr_neurons]);
+       } 
+      }
+    }
   }
   delete[] tdata;
   //delete[] loss;

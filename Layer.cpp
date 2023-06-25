@@ -8,6 +8,7 @@ Layer::Layer(int inp_size, int num_neurons){
     inputSize = inp_size;
     f_output = new double[numNeurons];
     a_output = new double[numNeurons];
+    delta = new double[numNeurons];
 
     weights = new double*[numNeurons];
       for (int i = 0; i < numNeurons; ++i){
@@ -23,6 +24,15 @@ Layer::Layer(int inp_size, int num_neurons){
     }
   }
 
+Layer::Layer(const Layer &other){
+  weights = other.weights;
+  biases = other.biases;
+  f_output = other.f_output;
+  a_output = other.a_output;
+
+  numNeurons = other.numNeurons;
+  inputSize = other.inputSize;
+  }
   void Layer::forward(double* inputData){
     double temp = 0;
     for (int n = 0; n < numNeurons; ++n){ //calculate cross product and add bias
@@ -51,4 +61,5 @@ Layer::Layer(int inp_size, int num_neurons){
     delete[] biases;
     delete[] f_output;
     delete[] a_output;
+    delete[] delta;
   }
