@@ -25,13 +25,28 @@ Layer::Layer(int inp_size, int num_neurons){
   }
 
 Layer::Layer(const Layer &other){
-  weights = other.weights;
-  biases = other.biases;
-  f_output = other.f_output;
-  a_output = other.a_output;
+    numNeurons = other.numNeurons;
+    inputSize = other.inputSize;
+    f_output = new double[numNeurons];
+    a_output = new double[numNeurons];
+    delta = new double[numNeurons];
 
-  numNeurons = other.numNeurons;
-  inputSize = other.inputSize;
+    f_output = other.f_output;
+    a_output = other.a_output;
+    delta = other.delta;
+
+    weights = new double*[numNeurons];
+      for (int i = 0; i < numNeurons; ++i){
+        weights[i] = new double[inputSize];
+
+        for (int ii = 0; ii < inputSize; ++ii){
+          weights[i][ii] = other.weights[i][ii];
+      }
+    }
+  biases = new double[numNeurons];
+    for (int i = 0; i < numNeurons; ++i){
+      biases[i] = other.biases[i];
+    }
   }
   void Layer::forward(double* inputData){
     double temp = 0;
