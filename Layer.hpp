@@ -19,7 +19,6 @@ class Layer{
     int inputSize;
 
     Layer(int, int);
-    Layer(const Layer &other);
     void forward(double* input);
     void relu(double* data);
     void sigmoid(double* data);

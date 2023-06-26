@@ -35,11 +35,15 @@ int main(){
   double loss;
 
   Layer In(1, BATCHES);
+  Layer *pIn = &In;
   Layer H1(1, 4);
+  Layer *pH1 = &H1;
   Layer H2(4, 4);
+  Layer *pH2 = &H2;
   Layer Out(4, 1);
+  Layer *pOut = &Out;
 
-  Layer Layers[] = {In, H1, H2, Out};
+  Layer *Layers[] = {pIn, pH1, pH2, pOut};
 
   In.a_output = tdata;
   // Forward
@@ -57,23 +61,23 @@ int main(){
     printf("Loss: %lf\n", loss);
 
     // Backpropagation
-    for (int o_neuron = 0; o_neuron < Out.numNeurons; ++o_neuron){
-      Out.delta[o_neuron] = 2 * (tdata[i] - Out.a_output[o_neuron]); // delta for output neuron
-    }
-    for (int layer = NUM_LAYERS - 1; layer > 2; --layer){ //iterates each layer
-      Layer curr = Layers[layer];
-      Layer prev = Layers[layer - 1]; //prev is previous layer in list and forward path but next layer in iteraion
-
-      for (int neuron = 0; neuron < curr.numNeurons; ++neuron){ // update weights
-        for (int inp = 0; inp < curr.inputSize; ++inp){
-          curr.weights[neuron][inp] -= curr.delta[neuron] * LEARNING_RATE * prev.a_output[neuron]; 
-        }
-        curr.biases[neuron] -= curr.delta[neuron] * LEARNING_RATE; // update bias
+    for (int o_neuron = 0; o_neuron < pOut->numNeurons; ++o_neuron){
+      Out.delta[o_neuron] = 2 * (tdata[i] - pOut->a_output[o_neuron]); // delta for output neuron
       }
-      for (int neuron = 0; neuron < prev.numNeurons; ++neuron){ //calculate delta for prev layer
-        prev.delta[neuron] = 0.0;
-       for (int curr_neurons = 0; curr_neurons < curr.numNeurons; ++curr_neurons){
-         prev.delta[neuron] += curr.delta[curr_neurons] * curr.weights[curr_neurons][neuron] * prev.a_output[curr_neurons] * (1 - prev.a_output[curr_neurons]);
+    for (int layer = NUM_LAYERS - 1; layer > 2; --layer){ //iterates each layer
+      Layer *curr = Layers[layer];
+      Layer *prev = Layers[layer - 1]; //prev is previous layer in list and forward path but next layer in iteraion
+
+      for (int neuron = 0; neuron < curr->numNeurons; ++neuron){ // update weights
+        for (int inp = 0; inp < curr->inputSize; ++inp){
+          curr->weights[neuron][inp] -= curr->delta[neuron] * LEARNING_RATE * prev->a_output[neuron]; 
+        }
+        curr->biases[neuron] -= curr->delta[neuron] * LEARNING_RATE; // update bias
+      }
+      for (int neuron = 0; neuron < prev->numNeurons; ++neuron){ //calculate delta for prev layer
+        prev->delta[neuron] = 0.0;
+       for (int curr_neurons = 0; curr_neurons < curr->numNeurons; ++curr_neurons){
+         prev->delta[neuron] += curr->delta[curr_neurons] * curr->weights[curr_neurons][neuron] * prev->a_output[curr_neurons] * (1 - prev->a_output[curr_neurons]);
        } 
       }
     }
