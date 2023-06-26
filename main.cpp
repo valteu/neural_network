@@ -34,13 +34,13 @@ int main(){
   double* tdata = createData(BATCHES);
   double loss;
 
-  Layer In(1, BATCHES);
+  Layer In(1, BATCHES, 'I');
   Layer *pIn = &In;
-  Layer H1(1, 4);
+  Layer H1(1, 4, '1');
   Layer *pH1 = &H1;
-  Layer H2(4, 4);
+  Layer H2(4, 4, '2');
   Layer *pH2 = &H2;
-  Layer Out(4, 1);
+  Layer Out(4, 1, 'O');
   Layer *pOut = &Out;
 
   Layer *Layers[] = {pIn, pH1, pH2, pOut};
@@ -62,9 +62,9 @@ int main(){
 
     // Backpropagation
     for (int o_neuron = 0; o_neuron < pOut->numNeurons; ++o_neuron){
-      Out.delta[o_neuron] = 2 * (tdata[i] - pOut->a_output[o_neuron]); // delta for output neuron
+      Out.delta[o_neuron] = 2 * (dataFunction(tdata[i]) - pOut->a_output[o_neuron]) * pOut->a_output[o_neuron] * (1 - pOut->a_output[o_neuron]); // delta for output neuron
       }
-    for (int layer = NUM_LAYERS - 1; layer > 2; --layer){ //iterates each layer
+    for (int layer = NUM_LAYERS - 1; layer > 0; --layer){ //iterates each layer
       Layer *curr = Layers[layer];
       Layer *prev = Layers[layer - 1]; //prev is previous layer in list and forward path but next layer in iteraion
 
@@ -76,7 +76,7 @@ int main(){
       }
       for (int neuron = 0; neuron < prev->numNeurons; ++neuron){ //calculate delta for prev layer
         prev->delta[neuron] = 0.0;
-       for (int curr_neurons = 0; curr_neurons < curr->numNeurons; ++curr_neurons){
+        for (int curr_neurons = 0; curr_neurons < curr->numNeurons; ++curr_neurons){
          prev->delta[neuron] += curr->delta[curr_neurons] * curr->weights[curr_neurons][neuron] * prev->a_output[curr_neurons] * (1 - prev->a_output[curr_neurons]);
        } 
       }

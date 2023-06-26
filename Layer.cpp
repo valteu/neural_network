@@ -3,21 +3,21 @@
 #include <cmath>
 
 
-Layer::Layer(int inp_size, int num_neurons){
-    numNeurons = num_neurons;
-    inputSize = inp_size;
-    f_output = new double[numNeurons];
-    a_output = new double[numNeurons];
-    delta = new double[numNeurons];
+Layer::Layer(int inp_size, int num_neurons, char n){
+  name = n;
+  numNeurons = num_neurons;
+  inputSize = inp_size;
+  f_output = new double[numNeurons];
+  a_output = new double[numNeurons];
+  delta = new double[numNeurons];
 
-    weights = new double*[numNeurons];
-      for (int i = 0; i < numNeurons; ++i){
-        weights[i] = new double[inputSize];
-
-        for (int ii = 0; ii < inputSize; ++ii){
-          weights[i][ii] = (double)rand() / RAND_MAX - 0.5;
-      }
+  weights = new double*[numNeurons];
+  for (int i = 0; i < numNeurons; ++i){
+    weights[i] = new double[inputSize];
+    for (int ii = 0; ii < inputSize; ++ii){
+      weights[i][ii] = (double)rand() / RAND_MAX - 0.5;
     }
+  }
   biases = new double[numNeurons];
     for (int i = 0; i < numNeurons; ++i){
       biases[i] = (double)rand() / RAND_MAX - 0.5;
