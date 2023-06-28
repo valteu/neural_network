@@ -11,6 +11,12 @@ Layer::Layer(int inp_size, int num_neurons, char n){
   a_output = new double[numNeurons];
   delta = new double[numNeurons];
 
+  gradientBiases = new double[numNeurons];
+  gradientWeights = new double*[numNeurons];
+  for (int i = 0; i < numNeurons; ++i){
+    gradientWeights[i] = new double[inputSize];
+  }
+
   weights = new double*[numNeurons];
   for (int i = 0; i < numNeurons; ++i){
     weights[i] = new double[inputSize];
@@ -47,10 +53,14 @@ Layer::Layer(int inp_size, int num_neurons, char n){
   Layer::~Layer(){
     for (int i = 0; i < numNeurons; ++i){
       delete[] weights[i];
+      delete[] gradientWeights[i];
     }
     delete[] weights;
+    delete[] gradientWeights;
     delete[] biases;
     delete[] f_output;
     delete[] a_output;
     delete[] delta;
+
+    delete[] gradientBiases;
   }

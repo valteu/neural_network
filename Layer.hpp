@@ -14,6 +14,9 @@ class Layer{
     double* f_output;
     double* a_output;
     double* delta;
+
+    double** gradientWeights;
+    double* gradientBiases;
     char name;
 
     int numNeurons;
