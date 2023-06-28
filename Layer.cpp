@@ -32,7 +32,7 @@ Layer::Layer(int inp_size, int num_neurons, char n){
 
   void Layer::forward(double* inputData){
     for (int n = 0; n < numNeurons; ++n){ //calculate cross product and add bias
-      double temp = 0;
+      double temp = 0.0;
       for (int i = 0; i < inputSize; ++i){
         temp += weights[n][i] * inputData[i];
       }

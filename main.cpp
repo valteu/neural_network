@@ -49,6 +49,7 @@ int main(){
   for (int batch = 0; batch < BATCHES; ++batch){
   tdata = createData(BATCHSIZE);
   In.a_output = tdata;
+  loss = 0;
   // Forward
   for (int sample = 0; sample < BATCHSIZE; ++sample){
       H1.forward(tdata);
@@ -60,8 +61,8 @@ int main(){
       Out.forward(H2.a_output);
       Out.sigmoid(Out.f_output);
 
-    loss = lossFunction(dataFunction(tdata[sample]), Out.a_output, 0);
-    printf("Loss: %lf\n", loss);
+    loss += lossFunction(dataFunction(tdata[sample]), Out.a_output, 0);
+    printf("Loss: %lf\n", loss / sample + 1);
 
     // Backpropagation
     for (int o_neuron = 0; o_neuron < pOut->numNeurons; ++o_neuron){
@@ -85,6 +86,7 @@ int main(){
       }
     }
   }
+  loss /= BATCHSIZE;
   for (int layer = NUM_LAYERS; layer > 0; --layer){
     for (int neuron = 0; neuron < Layers[layer]->numNeurons; ++neuron){
       Layers[layer]->biases[neuron] -= LEARNING_RATE * Layers[layer]->gradientBiases[neuron] / BATCHSIZE;
