@@ -31,8 +31,8 @@ Layer::Layer(int inp_size, int num_neurons, char n){
   }
 
   void Layer::forward(double* inputData){
-    double temp = 0;
     for (int n = 0; n < numNeurons; ++n){ //calculate cross product and add bias
+      double temp = 0;
       for (int i = 0; i < inputSize; ++i){
         temp += weights[n][i] * inputData[i];
       }
@@ -47,7 +47,7 @@ Layer::Layer(int inp_size, int num_neurons, char n){
   }
   void Layer::sigmoid(double* data){
     for (int i = 0; i < numNeurons; ++i){
-      a_output[i] = 1 / (1 + exp(data[i]));
+      a_output[i] = 1 / (1 + exp(-data[i]));
     }
   }
   Layer::~Layer(){

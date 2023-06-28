@@ -5,7 +5,7 @@
 
 int NUM_LAYERS = 4;
 float LEARNING_RATE = 0.1;
-int BATCHES = 1000;
+int BATCHES = 10;
 int BATCHSIZE = 1000;
 
 double dataFunction(double x){ // intervall [0, 6] interesting
@@ -47,6 +47,7 @@ int main(){
   Layer *Layers[] = {pIn, pH1, pH2, pOut};
 
   for (int batch = 0; batch < BATCHES; ++batch){
+  tdata = createData(BATCHSIZE);
   In.a_output = tdata;
   // Forward
   for (int sample = 0; sample < BATCHSIZE; ++sample){
