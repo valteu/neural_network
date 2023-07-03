@@ -5,8 +5,6 @@
 
 int NUM_LAYERS = 4;
 float LEARNING_RATE = 0.1;
-int BATCHES = 100;
-int BATCHSIZE = 1000;
 int SAMPLESIZE = 1000;
 
 double dataFunction(double x){ // intervall [0, 6] interesting
@@ -62,7 +60,7 @@ int main(){
   // init
   double* tdata;
   double loss;
-  tdata = createData(BATCHSIZE);
+  tdata = createData(SAMPLESIZE);
 
   Layer In(1, 1, 'I');
   Layer *pIn = &In;
@@ -75,10 +73,10 @@ int main(){
 
   Layer *Layers[] = {pIn, pH1, pH2, pOut};
 
-  for (int epoch = 0; epoch< 1000; ++epoch){
-  loss = 0;
-  // Forward
-  for (int sample = 0; sample < SAMPLESIZE; ++sample){
+  for (int epoch = 0; epoch < 1000; ++epoch){
+    loss = 0;
+    for (int sample = 0; sample < SAMPLESIZE; ++sample){
+    // Forward
       In.a_output = tdata;
       H1.forward(tdata);
       H1.sigmoid(H1.f_output);
@@ -89,13 +87,12 @@ int main(){
       Out.forward(H2.a_output);
       Out.sigmoid(Out.f_output);
 
-    loss += lossFunction(dataFunction(tdata[sample]), Out.a_output, 0);
-    printf("Loss: %lf\n", loss / sample + 1);
-
-    // Backpropagation
+      loss += lossFunction(dataFunction(tdata[sample]), Out.a_output, 0);
+    
+  // Backpropagation
     backpropagation(Layers, tdata, sample);
     }
+    printf("Epoch: %d, Loss: %lf\n", epoch, loss/SAMPLESIZE);
   }
-
   return 0;
 }
