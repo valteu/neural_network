@@ -40,14 +40,14 @@ Layer::Layer(int inp_size, int num_neurons, char n){
     }
   }
   
-  void Layer::relu(double* data){
+  void Layer::relu(){
     for (int i = 0; i < numNeurons; ++i){
-      a_output[i] = max<double>(data[i], 0);
+      a_output[i] = max<double>(f_output[i], 0);
     }
   }
-  void Layer::sigmoid(double* data){
+  void Layer::sigmoid(){
     for (int i = 0; i < numNeurons; ++i){
-      a_output[i] = 1 / (1 + exp(-data[i]));
+      a_output[i] = 1 / (1 + exp(-f_output[i]));
     }
   }
   Layer::~Layer(){

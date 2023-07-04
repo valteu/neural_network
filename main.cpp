@@ -5,7 +5,7 @@
 
 int NUM_LAYERS = 4;
 float LEARNING_RATE = 0.1;
-int SAMPLESIZE = 10000;
+int SAMPLESIZE = 100000;
 int EPOCHS = 1000;
 
 void printArray(double arr[], int len){
@@ -93,17 +93,17 @@ int main(){
         In.a_output[neuron] = data[sample];
       }
       H1.forward(In.a_output);
-      H1.sigmoid(H1.f_output);
+      H1.sigmoid();
       //printf("H1\n");
       //printArray(H1.a_output, H1.numNeurons);
 
       H2.forward(H1.a_output);
-      H2.sigmoid(H2.f_output);
+      H2.sigmoid();
 
       //printf("H2\n");
       //printArray(H2.a_output, H2.numNeurons);
       Out.forward(H2.a_output);
-      Out.sigmoid(Out.f_output);
+      Out.sigmoid();
 
       //printf("Out\n");
       //printArray(Out.a_output, Out.numNeurons);

@@ -24,8 +24,8 @@ class Layer{
 
     Layer(int, int, char);
     void forward(double* input);
-    void relu(double* data);
-    void sigmoid(double* data);
+    void relu();
+    void sigmoid();
 
     ~Layer();
 };
