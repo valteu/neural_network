@@ -5,8 +5,12 @@
 
 int NUM_LAYERS = 4;
 float LEARNING_RATE = 0.1;
+<<<<<<< HEAD
 int SAMPLESIZE = 100000;
 int EPOCHS = 1000;
+=======
+int SAMPLESIZE = 10;
+>>>>>>> parent of 1ee67a9 (network finally learning (but slowly))
 
 void printArray(double arr[], int len){
   for(int i = 0; i < len; ++i){
@@ -49,9 +53,9 @@ void backpropagation(Layer *Layers[], double* tdata, int sample){
     for (int neuron = 0; neuron < prev->numNeurons; ++neuron){ //calculate delta for prev layer
       prev->delta[neuron] = 0.0;
       for (int curr_neurons = 0; curr_neurons < curr->numNeurons; ++curr_neurons){
-        //std:: cout << "cdelta " << curr->delta[curr_neurons] << " cweights " << curr->weights[curr_neurons][neuron] << " pAOut " << prev->a_output[neuron] << "\n"; 
+        std:: cout << "cdelta " << curr->delta[curr_neurons] << " cweights " << curr->weights[curr_neurons][neuron] << " pAOut " << prev->a_output[neuron] << "\n"; 
        prev->delta[neuron] += curr->delta[curr_neurons] * curr->weights[curr_neurons][neuron] * prev->a_output[neuron] * (1 - prev->a_output[neuron]);
-    //std::cout << "delta " << prev->delta[neuron] << "\n";
+    std::cout << "delta " << prev->delta[neuron] << "\n";
      } 
     }
   }
@@ -85,7 +89,7 @@ int main(){
 
   Layer *Layers[] = {pIn, pH1, pH2, pOut};
 
-  for (int epoch = 0; epoch < EPOCHS; ++epoch){
+  for (int epoch = 0; epoch < 1; ++epoch){
     loss = 0;
     for (int sample = 0; sample < SAMPLESIZE; ++sample){
     // Forward
@@ -118,11 +122,11 @@ int main(){
       for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
         for (int inp = 0; inp < curr->inputSize; ++inp){
           curr->gradientWeights[neuron][inp] /= SAMPLESIZE;
-          curr->weights[neuron][inp] += LEARNING_RATE * curr->gradientWeights[neuron][inp];
+          curr->weights[neuron][inp] -= LEARNING_RATE * curr->gradientWeights[neuron][inp];
         }
         curr->gradientBiases[neuron] /= SAMPLESIZE;
-        //printf("Bias nudge: %lf\n", curr->gradientBiases[neuron]);
-        curr->biases[neuron] += LEARNING_RATE * curr->gradientBiases[neuron];
+        printf("Bias nudge: %lf\n", curr->gradientBiases[neuron]);
+        curr->biases[neuron] -= LEARNING_RATE * curr->gradientBiases[neuron];
       }
     }
 
