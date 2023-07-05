@@ -15,6 +15,10 @@ Layer::Layer(int inp_size, int num_neurons, char n){
   gradientWeights = new double*[numNeurons];
   for (int i = 0; i < numNeurons; ++i){
     gradientWeights[i] = new double[inputSize];
+    gradientBiases[i] = 0.0;
+    for (int ii = 0; ii < inputSize; ++ii){
+      gradientWeights[i][ii] = 0.0;
+    }
   }
 
   weights = new double*[numNeurons];
