@@ -4,7 +4,7 @@
 #include <random>
 
 int NUM_LAYERS = 4;
-float LEARNING_RATE = 0.1;
+float LEARNING_RATE = 0.01;
 int SAMPLESIZE = 100000;
 int EPOCHS = 1000;
 
@@ -37,21 +37,18 @@ double lossFunction(double data, double* nn_out, int data_idx){
 
 void backpropagation(Layer *Layers[], double* tdata, int sample){
   Layer *Out = Layers[NUM_LAYERS - 1];
-  //calculate output laeyr delta
+  //calculate output layer delta
   for (int o_neuron = 0; o_neuron < Layers[NUM_LAYERS-1]->numNeurons; ++o_neuron){
     Out->delta[o_neuron] = 2 * (dataFunction(tdata[sample]) - Out->a_output[o_neuron]) * Out->a_output[o_neuron] * (1 - Out->a_output[o_neuron]); // delta for output neuron
-    //std::cout << Out->delta[o_neuron] << "\n";
   }
-  for (int layer = NUM_LAYERS - 1; layer > 0; --layer){ //iterates each hidden layer 
+  for (int layer = NUM_LAYERS - 1; layer > 1; --layer){ //iterates each hidden layer 
     Layer *curr = Layers[layer];
     Layer *prev = Layers[layer - 1]; //prev is previous layer in list and forward path but next layer in iteraion
 
     for (int neuron = 0; neuron < prev->numNeurons; ++neuron){ //calculate delta for prev layer
       prev->delta[neuron] = 0.0;
       for (int curr_neurons = 0; curr_neurons < curr->numNeurons; ++curr_neurons){
-        //std:: cout << "cdelta " << curr->delta[curr_neurons] << " cweights " << curr->weights[curr_neurons][neuron] << " pAOut " << prev->a_output[neuron] << "\n"; 
        prev->delta[neuron] += curr->delta[curr_neurons] * curr->weights[curr_neurons][neuron] * prev->a_output[neuron] * (1 - prev->a_output[neuron]);
-    //std::cout << "delta " << prev->delta[neuron] << "\n";
      } 
     }
   }
@@ -60,7 +57,6 @@ void backpropagation(Layer *Layers[], double* tdata, int sample){
     Layer *curr = Layers[layer];
     for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
       curr->gradientBiases[neuron] += curr->delta[neuron]; 
-      //printf("Gradient_update: %lf; delta: %lf\n", curr->gradientBiases[neuron], curr->delta[neuron]);
       for (int in_size = 0; in_size < curr->inputSize; ++in_size){
         curr->gradientWeights[neuron][in_size] += curr->delta[neuron] * Layers[layer-1]->a_output[in_size];
       }
@@ -94,26 +90,20 @@ int main(){
       }
       H1.forward(In.a_output);
       H1.sigmoid();
-      //printf("H1\n");
-      //printArray(H1.a_output, H1.numNeurons);
 
       H2.forward(H1.a_output);
       H2.sigmoid();
 
-      //printf("H2\n");
-      //printArray(H2.a_output, H2.numNeurons);
       Out.forward(H2.a_output);
       Out.sigmoid();
 
-      //printf("Out\n");
-      //printArray(Out.a_output, Out.numNeurons);
       loss += lossFunction(dataFunction(data[sample]), Out.a_output, 0);
     
   // Backpropagation
       backpropagation(Layers, data, sample);
     }
     //average costs and update weights and biases
-    for (int layer = 0; layer < NUM_LAYERS - 1; ++layer){
+    for (int layer = 1; layer < NUM_LAYERS - 1; ++layer){
       Layer *curr = Layers[layer];
       for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
         for (int inp = 0; inp < curr->inputSize; ++inp){
