@@ -119,5 +119,18 @@ int main(){
 
     printf("Epoch: %d, Loss: %lf\n", epoch, loss/SAMPLESIZE);
   }
+  double * inp= new double[10];
+  double arr[] = {0.0, 0.6, 1.4, 1.7, 2.3, 4.5, 5.2, 5.8, 7.89, 20.3};
+  for (int i = 0; i < 10; ++i){
+    inp[0] = arr[i];
+    Layers[1]->forward(inp);
+    Layers[1]->sigmoid();
+    Layers[2]->forward(Layers[1]->a_output);
+    Layers[2]->sigmoid();
+    Layers[3]->forward(Layers[2]->a_output);
+    Layers[3]->sigmoid();
+    printf("desired output = %lf, network output = %lf\n", dataFunction(arr[i]), Layers[3]->a_output[0]);
+    
+  }
   return 0;
 }
