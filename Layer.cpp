@@ -3,8 +3,7 @@
 #include <cmath>
 
 
-Layer::Layer(int inp_size, int num_neurons, char n){
-  name = n;
+Layer::Layer(int inp_size, int num_neurons){
   numNeurons = num_neurons;
   inputSize = inp_size;
   f_output = new double[numNeurons];

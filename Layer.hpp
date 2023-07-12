@@ -17,12 +17,11 @@ class Layer{
 
     double** gradientWeights;
     double* gradientBiases;
-    char name;
 
     int numNeurons;
     int inputSize;
 
-    Layer(int, int, char);
+    Layer(int, int);
     void forward(double* input);
     void relu();
     void sigmoid();

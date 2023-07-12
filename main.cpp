@@ -21,7 +21,7 @@ double dataFunction(double x){ // intervall [0, 6] interesting
 double* createData(int samples){ //create data array of trainigsdata
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> distribution(1.0, 6.0);
+  std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
   double* data = new double[samples];
   for (int i = 0; i < samples; ++i){
@@ -71,13 +71,13 @@ int main(){
   double loss;
   data = createData(SAMPLESIZE);
 
-  Layer In(1, 4, 'I');
+  Layer In(1, 1);
   Layer *pIn = &In;
-  Layer H1(1, 4, '1');
+  Layer H1(1, 4);
   Layer *pH1 = &H1;
-  Layer H2(4, 4, '2');
+  Layer H2(4, 4);
   Layer *pH2 = &H2;
-  Layer Out(4, 1, 'O');
+  Layer Out(4, 1);
   Layer *pOut = &Out;
 
   Layer *Layers[] = {pIn, pH1, pH2, pOut};
@@ -109,11 +109,11 @@ int main(){
       for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
         for (int inp = 0; inp < curr->inputSize; ++inp){
           curr->gradientWeights[neuron][inp] /= SAMPLESIZE;
-          curr->weights[neuron][inp] -= LEARNING_RATE * curr->gradientWeights[neuron][inp];
+          curr->weights[neuron][inp] += LEARNING_RATE * curr->gradientWeights[neuron][inp];
           curr->gradientWeights[neuron][inp] = 0.0;
         }
         curr->gradientBiases[neuron] /= SAMPLESIZE;
-        curr->biases[neuron] -= LEARNING_RATE * curr->gradientBiases[neuron];
+        curr->biases[neuron] += LEARNING_RATE * curr->gradientBiases[neuron];
         curr->gradientBiases[neuron] = 0.0;
       }
     }
@@ -121,7 +121,7 @@ int main(){
     printf("Epoch: %d, Loss: %lf\n", epoch, loss/SAMPLESIZE);
   }
   double * inp= new double[10];
-  double arr[] = {0.0, 0.6, 1.4, 1.7, 2.3, 4.5, 5.2, 5.8, 7.89, 20.3};
+  double arr[] = {0.0, 0.6, 0.4, 1.2, 0.01, 4.5, 5.2, 5.8, 7.89, 20.3};
   for (int i = 0; i < 10; ++i){
     inp[0] = arr[i];
     Layers[1]->forward(inp);
