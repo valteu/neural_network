@@ -1,13 +1,45 @@
 #include "Layer.hpp"
+#include "Network.hpp"
 #include <cmath>
 #include <iostream>
 #include <random>
 
-int NUM_LAYERS = 4;
 float LEARNING_RATE = 0.01;
-int SAMPLESIZE = 100000;
+int SAMPLES = 100000;
 int EPOCHS = 1000;
 
+double dataFunction(double x){ // intervall [0, 6] interesting
+  //return sin(x) + 0.5 * cos(2 * x) + 0.3 * sin(3*x) + 0.2 * cos(4* x) + 0.1 * sin(5*x) + 0.1 * cos(6*x);
+  return x;
+}
+
+double* createData(int samples){ //create data array of trainigsdata
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+  double* data = new double[samples];
+  for (int i = 0; i < samples; ++i){
+    double x = distribution(gen);
+    data[i] = x;
+  }
+  return data;
+}
+
+int main(){
+  double* data = createData(SAMPLES);
+  double* desired_data = new double[SAMPLES];
+  for (int i = 0; i < SAMPLES; ++i){
+    desired_data[i] = dataFunction(data[i]);
+  }
+  int layout[] = {1, 5, 5, 5, 1};
+  printf("create Network\n");
+  Network network = Network(layout, 4);
+  network.train(EPOCHS, SAMPLES, data, desired_data, LEARNING_RATE);
+  delete[] desired_data;
+  return 0;
+}
+/*
 void printArray(double arr[], int len){
   for(int i = 0; i < len; ++i){
     printf("lop: %lf\n", arr[i]);
@@ -135,3 +167,4 @@ int main(){
   }
   return 0;
 }
+*/
