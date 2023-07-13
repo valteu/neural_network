@@ -4,9 +4,9 @@
 #include <iostream>
 #include <random>
 
-float LEARNING_RATE = 0.01;
-int SAMPLES = 100000;
-int EPOCHS = 1000;
+float LEARNING_RATE = 1;
+int SAMPLES = 1000;
+int EPOCHS = 100;
 
 double dataFunction(double x){ // intervall [0, 6] interesting
   //return sin(x) + 0.5 * cos(2 * x) + 0.3 * sin(3*x) + 0.2 * cos(4* x) + 0.1 * sin(5*x) + 0.1 * cos(6*x);
@@ -32,9 +32,8 @@ int main(){
   for (int i = 0; i < SAMPLES; ++i){
     desired_data[i] = dataFunction(data[i]);
   }
-  int layout[] = {1, 5, 5, 5, 1};
-  printf("create Network\n");
-  Network network = Network(layout, 4);
+  int layout[] = {1, 4, 4, 1}; //input size, numNeurons of Input layer, numNeurons of hiddenLayer 1, ..., numNeurons of output Layer
+  Network network = Network(layout, 3);
   network.train(EPOCHS, SAMPLES, data, desired_data, LEARNING_RATE);
   delete[] desired_data;
   return 0;

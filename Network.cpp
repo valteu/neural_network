@@ -100,7 +100,7 @@ void Network::train(int epochs, int samples, double* data, double* desired_data,
       forwardPath();
       loss += lossFunction(tdesired_data, Layers[nlayers - 1]->a_output, Layers[nlayers - 1]->numNeurons);
     }
-    printf("Epoch: %d, loss: %lf\n", epoch, loss);
+    printf("Epoch: %d, loss: %lf\n", epoch, loss / samples);
     backwardPath();
     updateLayers(samples, learning_rate);
   }
