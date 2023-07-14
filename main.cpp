@@ -4,7 +4,7 @@
 #include <iostream>
 #include <random>
 
-float LEARNING_RATE = 0.5;
+float LEARNING_RATE = 0.05;
 int SAMPLES = 1000;
 int EPOCHS = 500000;
 
@@ -31,9 +31,8 @@ int main(){
 
   //create network layout: 0. index = size of input, 1. index = number input neurons, 2. index = number second layer neurons, ... 
   int layout[] = {1, 2, 1};
-  int num_neurons = sizeof(layout) / sizeof(layout[0]) - 1;
-  //create network with given layer
-  Network network = Network(layout, num_neurons);
+  //create network with given layout
+  Network network = Network(layout, sizeof(layout) / sizeof(layout[0]) - 1);
   //train network
   network.train(EPOCHS, SAMPLES, data, targets, LEARNING_RATE); 
   //test network

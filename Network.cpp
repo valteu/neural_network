@@ -7,7 +7,6 @@
 Network::Network(int* layout, int num_layers){
   // layout has size num_layers + 1 to store netInSize and (numNeurons for each layer)
   nlayers = num_layers; 
-  printf("Num Layers = %d\n", nlayers);
   netInSize = layout[0];
   netOutSize = layout[nlayers];
   tdata = new double[netInSize];
