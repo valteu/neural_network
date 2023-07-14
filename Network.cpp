@@ -74,11 +74,11 @@ void Network::updateLayers(int samples, float learning_rate){
     for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
       for (int inp = 0; inp < curr->inputSize; ++inp){
         curr->gradientWeights[neuron][inp] /= samples;
-        curr->weights[neuron][inp] -= learning_rate * curr->gradientWeights[neuron][inp];
+        curr->weights[neuron][inp] += learning_rate * curr->gradientWeights[neuron][inp];
         curr->gradientWeights[neuron][inp] = 0.0;
       }
         curr->gradientBiases[neuron] /= samples;
-        curr->biases[neuron] -= learning_rate * curr->gradientBiases[neuron];
+        curr->biases[neuron] += learning_rate * curr->gradientBiases[neuron];
         curr->gradientBiases[neuron] = 0.0;
     }
   }

@@ -5,8 +5,8 @@
 #include <random>
 
 float LEARNING_RATE = 0.5;
-int SAMPLES = 100;
-int EPOCHS = 50000;
+int SAMPLES = 1000;
+int EPOCHS = 500000;
 
 double dataFunction(double x){ // intervall [0, 6] interesting
   //return sin(x) + 0.5 * cos(2 * x) + 0.3 * sin(3*x) + 0.2 * cos(4* x) + 0.1 * sin(5*x) + 0.1 * cos(6*x);
