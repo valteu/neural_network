@@ -6,12 +6,14 @@
 Layer::Layer(int inp_size, int num_neurons){
   numNeurons = num_neurons;
   inputSize = inp_size;
+
   f_output = new double[numNeurons];
   a_output = new double[numNeurons];
   delta = new double[numNeurons];
-
   gradientBiases = new double[numNeurons];
   gradientWeights = new double*[numNeurons];
+
+  //initialize gradient vectors
   for (int i = 0; i < numNeurons; ++i){
     gradientWeights[i] = new double[inputSize];
     gradientBiases[i] = 0.0;
@@ -20,51 +22,51 @@ Layer::Layer(int inp_size, int num_neurons){
     }
   }
 
+  //initialize weights and biases
   weights = new double*[numNeurons];
+  biases = new double[numNeurons];
+
   for (int i = 0; i < numNeurons; ++i){
+    biases[i] = (double)rand() / RAND_MAX * 2.0 - 1.0;
     weights[i] = new double[inputSize];
     for (int ii = 0; ii < inputSize; ++ii){
       weights[i][ii] = (double)rand() / RAND_MAX * 2.0 - 1.0;
     }
   }
-  biases = new double[numNeurons];
-    for (int i = 0; i < numNeurons; ++i){
-      biases[i] = (double)rand() / RAND_MAX * 2.0 - 1.0;
-    }
-  }
+}
 
-  void Layer::forward(double* inputData){
-    for (int n = 0; n < numNeurons; ++n){ //calculate cross product and add bias
-      double temp = 0.0;
-      for (int i = 0; i < inputSize; ++i){
-        temp += weights[n][i] * inputData[i];
-      }
-      f_output[n] = temp + biases[n];
+void Layer::forward(double* inputData){
+   for (int n = 0; n < numNeurons; ++n){ //calculate cross product and add bias
+    double temp = 0.0;
+    for (int i = 0; i < inputSize; ++i){
+      temp += weights[n][i] * inputData[i];
     }
+    f_output[n] = temp + biases[n];
   }
+}
   
-  void Layer::relu(){
-    for (int i = 0; i < numNeurons; ++i){
-      a_output[i] = max<double>(f_output[i], 0);
-    }
+void Layer::relu(){
+  for (int i = 0; i < numNeurons; ++i){
+    a_output[i] = max<double>(f_output[i], 0);
   }
-  void Layer::sigmoid(){
-    for (int i = 0; i < numNeurons; ++i){
-      a_output[i] = 1.0 / (1.0 + exp(-f_output[i]));
-    }
-  }
+}
 
-  Layer::~Layer(){
-    for (int i = 0; i < numNeurons; ++i){
-      delete[] weights[i];
-      delete[] gradientWeights[i];
-    }
-    delete[] weights;
-    delete[] gradientWeights;
-    delete[] biases;
-    delete[] f_output;
-    delete[] a_output;
-    delete[] delta;
-
-    delete[] gradientBiases;
+void Layer::sigmoid(){
+  for (int i = 0; i < numNeurons; ++i){
+    a_output[i] = 1.0 / (1.0 + exp(-f_output[i]));
   }
+}
+
+Layer::~Layer(){
+  for (int i = 0; i < numNeurons; ++i){
+    delete[] weights[i];
+    delete[] gradientWeights[i];
+  }
+  delete[] weights;
+  delete[] gradientWeights;
+  delete[] biases;
+  delete[] f_output;
+  delete[] a_output;
+  delete[] delta;
+  delete[] gradientBiases;
+}

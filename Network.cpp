@@ -6,13 +6,14 @@
 
 Network::Network(int* layout, int num_layers){
   // layout has size num_layers + 1 to store netInSize and (numNeurons for each layer)
-  nlayers = num_layers;
+  nlayers = num_layers; 
+  printf("Num Layers = %d\n", nlayers);
   netInSize = layout[0];
-  netOutSize = layout[num_layers];
+  netOutSize = layout[nlayers];
   tdata = new double[netInSize];
   tdesired_data = new double[netInSize];
-  Layers = new Layer*[num_layers]; 
-  for (int layer = 0; layer < num_layers; ++layer){
+  Layers = new Layer*[nlayers]; 
+  for (int layer = 0; layer < nlayers; ++layer){
     Layers[layer] = new Layer(layout[layer], layout[layer + 1]);
   }
 }
@@ -73,13 +74,15 @@ void Network::updateLayers(int samples, float learning_rate){
     Layer* curr = Layers[layer];
     for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
       for (int inp = 0; inp < curr->inputSize; ++inp){
+        //update weights
         curr->gradientWeights[neuron][inp] /= samples;
         curr->weights[neuron][inp] += learning_rate * curr->gradientWeights[neuron][inp];
         curr->gradientWeights[neuron][inp] = 0.0;
       }
-        curr->gradientBiases[neuron] /= samples;
-        curr->biases[neuron] += learning_rate * curr->gradientBiases[neuron];
-        curr->gradientBiases[neuron] = 0.0;
+      //update biases
+      curr->gradientBiases[neuron] /= samples;
+      curr->biases[neuron] += learning_rate * curr->gradientBiases[neuron];
+      curr->gradientBiases[neuron] = 0.0;
     }
   }
 }
