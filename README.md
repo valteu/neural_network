@@ -1,6 +1,6 @@
-# Neural Network Example
+# Neural Network from scratch
 
-This project provides a simple implementation of a feedforward neural network using C++. It consists of classes for the neural network (`Network`) and individual layers (`Layer`), along with a `main.cpp` file for demonstration.
+This project provides a simple implementation of a feedforward neural network using C++. It only uses the C++ standart library and consists of classes for the neural network (`Network`) and individual layers (`Layer`), along with a `main.cpp` file for demonstration.
 
 ## Prerequisites
 
