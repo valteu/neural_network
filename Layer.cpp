@@ -24,12 +24,12 @@ Layer::Layer(int inp_size, int num_neurons){
   for (int i = 0; i < numNeurons; ++i){
     weights[i] = new double[inputSize];
     for (int ii = 0; ii < inputSize; ++ii){
-      weights[i][ii] = (double)rand() / RAND_MAX - 0.5;
+      weights[i][ii] = (double)rand() / RAND_MAX * 2.0 - 1.0;
     }
   }
   biases = new double[numNeurons];
     for (int i = 0; i < numNeurons; ++i){
-      biases[i] = (double)rand() / RAND_MAX - 0.5;
+      biases[i] = (double)rand() / RAND_MAX * 2.0 - 1.0;
     }
   }
 
@@ -50,9 +50,10 @@ Layer::Layer(int inp_size, int num_neurons){
   }
   void Layer::sigmoid(){
     for (int i = 0; i < numNeurons; ++i){
-      a_output[i] = 1 / (1 + exp(-f_output[i]));
+      a_output[i] = 1.0 / (1.0 + exp(-f_output[i]));
     }
   }
+
   Layer::~Layer(){
     for (int i = 0; i < numNeurons; ++i){
       delete[] weights[i];

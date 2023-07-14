@@ -10,10 +10,11 @@ class Network{
   double * tdesired_data;
   public: Network(int* layout, int num_layers);
   double lossFunction(double*, double*, int);
-  void forwardPath();
-  void backwardPath();
+  void forwardPass(double*);
+  void backwardPass();
   void updateLayers(int samples, float learning_rate);
   public: void train(int epochs, int samples, double* data, double* desired_data, float learning_rate);
+  public: void test(double*, double*, int);
 
   ~Network();
   

@@ -25,8 +25,8 @@ double Network::lossFunction(double* desired, double* netOut, int numNeurons){
   return loss;
 }
 
-void Network::forwardPath(){
-  Layers[0]->forward(tdata);
+void Network::forwardPass(double* data){
+  Layers[0]->forward(data);
   Layers[0]->sigmoid();
   for (int layer = 1; layer < nlayers; ++layer){
     Layer* curr = Layers[layer];
@@ -36,7 +36,7 @@ void Network::forwardPath(){
   }
 }
 
-void Network::backwardPath(){
+void Network::backwardPass(){
   Layer* Out = Layers[nlayers - 1];
   //calculate output layer deltas
   for (int neuron = 0; neuron < Out->numNeurons; ++neuron){
@@ -74,11 +74,11 @@ void Network::updateLayers(int samples, float learning_rate){
     for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
       for (int inp = 0; inp < curr->inputSize; ++inp){
         curr->gradientWeights[neuron][inp] /= samples;
-        curr->weights[neuron][inp] += learning_rate * curr->gradientWeights[neuron][inp];
+        curr->weights[neuron][inp] -= learning_rate * curr->gradientWeights[neuron][inp];
         curr->gradientWeights[neuron][inp] = 0.0;
       }
         curr->gradientBiases[neuron] /= samples;
-        curr->biases[neuron] += learning_rate * curr->gradientBiases[neuron];
+        curr->biases[neuron] -= learning_rate * curr->gradientBiases[neuron];
         curr->gradientBiases[neuron] = 0.0;
     }
   }
@@ -97,12 +97,25 @@ void Network::train(int epochs, int samples, double* data, double* desired_data,
         tdesired_data[netOut] = desired_data[sample * netOutSize + netOut];
       }
 
-      forwardPath();
+      forwardPass(tdata);
       loss += lossFunction(tdesired_data, Layers[nlayers - 1]->a_output, Layers[nlayers - 1]->numNeurons);
     }
-    printf("Epoch: %d, loss: %lf\n", epoch, loss / samples);
-    backwardPath();
+    if (epoch % 10000 == 0){
+      printf("Epoch: %d, loss: %lf\n", epoch, loss / samples);
+    }
+    backwardPass();
     updateLayers(samples, learning_rate);
+  }
+}
+
+void Network::test(double* inputs, double* targets, int num){
+  double* tests = new double[netInSize];
+  for (int sample = 0; sample < num; ++sample){
+    for (int netIn = 0; netIn < netInSize; ++netIn){
+      tests[netIn] = inputs[sample * netInSize + netIn];
+    }
+    forwardPass(tests);
+    printf("Test x = %lf, Network output = %lf, target = %lf\n", tests[0], Layers[nlayers - 1]->a_output[0], targets[sample]);
   }
 }
 

@@ -4,9 +4,9 @@
 #include <iostream>
 #include <random>
 
-float LEARNING_RATE = 1;
-int SAMPLES = 1000;
-int EPOCHS = 100;
+float LEARNING_RATE = 0.5;
+int SAMPLES = 100;
+int EPOCHS = 50000;
 
 double dataFunction(double x){ // intervall [0, 6] interesting
   //return sin(x) + 0.5 * cos(2 * x) + 0.3 * sin(3*x) + 0.2 * cos(4* x) + 0.1 * sin(5*x) + 0.1 * cos(6*x);
@@ -14,28 +14,25 @@ double dataFunction(double x){ // intervall [0, 6] interesting
 }
 
 double* createData(int samples){ //create data array of trainigsdata
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
   double* data = new double[samples];
   for (int i = 0; i < samples; ++i){
-    double x = distribution(gen);
-    data[i] = x;
+    data[i] = (double)rand() / RAND_MAX;
   }
   return data;
 }
 
 int main(){
   double* data = createData(SAMPLES);
-  double* desired_data = new double[SAMPLES];
+  double* targets = new double[SAMPLES];
   for (int i = 0; i < SAMPLES; ++i){
-    desired_data[i] = dataFunction(data[i]);
+    targets[i] = dataFunction(data[i]);
   }
-  int layout[] = {1, 4, 4, 1}; //input size, numNeurons of Input layer, numNeurons of hiddenLayer 1, ..., numNeurons of output Layer
-  Network network = Network(layout, 3);
-  network.train(EPOCHS, SAMPLES, data, desired_data, LEARNING_RATE);
-  delete[] desired_data;
+  int layout[] = {1, 2, 1}; //input size, numNeurons of Input layer, numNeurons of hiddenLayer 1, ..., numNeurons of output Layer
+  Network network = Network(layout, 2);
+  network.train(EPOCHS, SAMPLES, data, targets, LEARNING_RATE);
+  double tests[] = {0, 0.1, 0.4, 0.6, 1};
+  network.test(tests, tests, 5);
+  delete[] targets;
   return 0;
 }
 /*
