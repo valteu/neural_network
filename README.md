@@ -37,3 +37,6 @@ Contributions to this project are welcome. If you encounter any issues or have s
 
 - The implementation of the neural network is inspired by various online resources and tutorials.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
