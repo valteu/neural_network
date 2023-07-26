@@ -50,7 +50,7 @@ void Network::backwardPass(){
     //calculate delta for prev layer
     for (int neuron = 0; neuron < prev->numNeurons; ++neuron){
       prev->delta[neuron] = 0.0;
-      double prevNeuronActive;
+      double prevNeuronActive = prev->a_output[neuron];
       for (int curr_neuron = 0; curr_neuron < curr->numNeurons; ++curr_neuron){
         prev->delta[neuron] += curr->delta[curr_neuron] * curr->weights[curr_neuron][neuron] * prevNeuronActive * (1 - prevNeuronActive);
       }
@@ -68,7 +68,39 @@ void Network::backwardPass(){
   }
 }
 
-void Network::updateLayers(int samples, float learning_rate){
+/*
+void Network::backwardPass(){
+  Layer* Out = Layers[nlayers - 1];
+  //calculate output layer deltas
+  for (int neuron = 0; neuron < Out->numNeurons; ++neuron){
+    double neuronActiv = Out->a_output[neuron];
+    Out->delta[neuron] = (tdesired_data[neuron] - neuronActiv);
+  }
+  //iterate each hidden layer
+  for (int layer = nlayers - 1; layer > 0; --layer){
+    Layer* curr = Layers[layer];
+    Layer* prev = Layers[layer - 1];
+    //calculate delta for prev layer
+    for (int neuron = 0; neuron < prev->numNeurons; ++neuron){
+      prev->delta[neuron] = 0;
+      for (int curr_neuron = 0; curr_neuron < curr->numNeurons; ++curr_neuron){
+        prev->delta[neuron] = curr->delta[curr_neuron] * curr->weights[curr_neuron][neuron];
+      }
+    }
+  }
+  //calculate gradients
+  for (int layer = nlayers - 1; layer > 0; --layer){
+    Layer* curr = Layers[layer];
+    for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
+      curr->gradientBiases[neuron] = curr->delta[neuron] * curr->a_output[neuron] * (1.0 - curr->a_output[neuron]);
+      for (int inSize = 0; inSize < curr->inputSize; ++inSize){
+        curr->gradientWeights[neuron][inSize] = curr->delta[neuron] * Layers[layer-1]->a_output[inSize] * curr->a_output[neuron] * (1.0 - curr->a_output[neuron]);
+      }
+    }
+  }
+}
+*/
+  void Network::updateLayers(int samples, float learning_rate){
   for (int layer = 0; layer < nlayers; ++layer){
     Layer* curr = Layers[layer];
     for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
