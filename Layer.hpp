@@ -21,8 +21,11 @@ class Layer{
     int outputSize;
     int inputSize;
 
-    Layer(int, int);
+    Activation activaton;
+
+    Layer(int, int, Activation);
     void forward(double* input);
+    void backward();
     void relu();
     void sigmoid();
 

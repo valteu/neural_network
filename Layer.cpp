@@ -3,7 +3,7 @@
 #include <cmath>
 
 
-Layer::Layer(int inp_size, int out_size){
+Layer::Layer(int inp_size, int out_size, Activation activaton){
   outputSize = out_size;
   inputSize = inp_size;
 
@@ -17,6 +17,7 @@ Layer::Layer(int inp_size, int out_size){
   weights = new double*[inputSize];
   biases = new double[outputSize];
 
+  activation = activation;
   //initialize weights, biases and gradient vectors
   for (int i = 0; i < inputSize; ++i){
     weights[i] = new double[inputSize];
@@ -42,7 +43,24 @@ void Layer::forward(double* inputData){
     f_output[o] = temp + biases[o];
   }
 }
-  
+/*
+void Layer::backward(bool first, double* targets, Layer* prev){
+  if (first){
+    for (int o = 0; o < outputSize; ++o){
+      delta[o] = 2 * (targets[o] - a_output[o]) * activaton.derivative(prev->f_output[o]);
+    }
+  }
+
+  else{
+    for (int o = 0; o < outputSize; ++o){
+      delta[o] = 0.0;
+      for (int i = 0; i < inputSize; ++i){
+        
+      }
+    }
+  }
+}
+  */
 void Layer::relu(){
   for (int i = 0; i < outputSize; ++i){
     a_output[i] = max<double>(f_output[i], 0);

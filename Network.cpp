@@ -40,8 +40,8 @@ void Network::backwardPass(){
   Layer* Out = Layers[nlayers - 1];
   //calculate output layer deltas
   for (int output = 0; output < Out->outputSize; ++output){
-    double neuronActiv = Out->a_output[output];
-    Out->delta[output] = 2 * (tdesired_data[output] - neuronActiv) * neuronActiv * (1 - neuronActiv);
+    double neuronActive = Out->a_output[output];
+    Out->delta[output] = 2 * (tdesired_data[output] - neuronActive) * neuronActive * (1 - neuronActive);
   }
   //iterate each hidden layer
   for (int layer = nlayers - 1; layer > 0; --layer){
