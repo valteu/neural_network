@@ -9,7 +9,7 @@ class Network{
   double * tdata; 
   double * tdesired_data;
   public: Network(int* layout, int num_layers);
-  double lossFunction(double*, double*, int);
+  double squaredLoss(double*, double*, int);
   void forwardPass(double*);
   void backwardPass();
   void updateLayers(int samples, float learning_rate);

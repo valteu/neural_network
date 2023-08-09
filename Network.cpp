@@ -17,10 +17,10 @@ Network::Network(int* layout, int num_layers){
   }
 }
 
-double Network::lossFunction(double* desired, double* netOut, int numNeurons){
+double Network::squaredLoss(double* desired, double* netOut, int outputSize){
   double loss = 0;
-  for (int neuron = 0; neuron < numNeurons; ++neuron){
-    loss += (desired[neuron] - netOut[neuron]) * (desired[neuron] - netOut[neuron]);
+  for (int output = 0; output < outputSize; ++output){
+    loss += (desired[output] - netOut[output]) * (desired[output] - netOut[output]);
   }
   return loss;
 }
@@ -39,30 +39,30 @@ void Network::forwardPass(double* data){
 void Network::backwardPass(){
   Layer* Out = Layers[nlayers - 1];
   //calculate output layer deltas
-  for (int neuron = 0; neuron < Out->numNeurons; ++neuron){
-    double neuronActiv = Out->a_output[neuron];
-    Out->delta[neuron] = 2 * (tdesired_data[neuron] - neuronActiv) * neuronActiv * (1 - neuronActiv);
+  for (int output = 0; output < Out->outputSize; ++output){
+    double neuronActiv = Out->a_output[output];
+    Out->delta[output] = 2 * (tdesired_data[output] - neuronActiv) * neuronActiv * (1 - neuronActiv);
   }
   //iterate each hidden layer
   for (int layer = nlayers - 1; layer > 0; --layer){
     Layer* curr = Layers[layer];
     Layer* prev = Layers[layer - 1];
     //calculate delta for prev layer
-    for (int neuron = 0; neuron < prev->numNeurons; ++neuron){
-      prev->delta[neuron] = 0.0;
-      double prevNeuronActive = prev->a_output[neuron];
-      for (int curr_neuron = 0; curr_neuron < curr->numNeurons; ++curr_neuron){
-        prev->delta[neuron] += curr->delta[curr_neuron] * curr->weights[curr_neuron][neuron] * prevNeuronActive * (1 - prevNeuronActive);
+    for (int output = 0; output < prev->outputSize; ++output){
+      prev->delta[output] = 0.0;
+      double prevNeuronActive = prev->a_output[output];
+      for (int curr_output = 0; curr_output < curr->outputSize; ++curr_output){
+        prev->delta[output] += curr->delta[curr_output] * curr->weights[output][curr_output] * prevNeuronActive * (1 - prevNeuronActive);
       }
     }
   }
   //calculate gradients
   for (int layer = nlayers - 1; layer > 0; --layer){
     Layer* curr = Layers[layer];
-    for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
-      curr->gradientBiases[neuron] += curr->delta[neuron];
-      for (int inSize = 0; inSize < curr->inputSize; ++inSize){
-        curr->gradientWeights[neuron][inSize] += curr->delta[neuron] * Layers[layer-1]->a_output[inSize];
+    for (int input = 0; input < curr->inputSize; ++input){
+      for (int output = 0; output < curr->outputSize; ++output){
+        curr->gradientWeights[input][output] += curr->delta[output] * Layers[layer-1]->a_output[input];
+        curr->gradientBiases[output] += curr->delta[output];
       }
     }
   }
@@ -103,17 +103,17 @@ void Network::backwardPass(){
   void Network::updateLayers(int samples, float learning_rate){
   for (int layer = 0; layer < nlayers; ++layer){
     Layer* curr = Layers[layer];
-    for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
-      for (int inp = 0; inp < curr->inputSize; ++inp){
+    for (int o = 0; o < curr->outputSize; ++o){
+      for (int i = 0; i < curr->inputSize; ++i){
         //update weights
-        curr->gradientWeights[neuron][inp] /= samples;
-        curr->weights[neuron][inp] += learning_rate * curr->gradientWeights[neuron][inp];
-        curr->gradientWeights[neuron][inp] = 0.0;
+        curr->gradientWeights[i][o] /= samples;
+        curr->weights[i][o] += learning_rate * curr->gradientWeights[i][o];
+        curr->gradientWeights[i][o] = 0.0;
       }
       //update biases
-      curr->gradientBiases[neuron] /= samples;
-      curr->biases[neuron] += learning_rate * curr->gradientBiases[neuron];
-      curr->gradientBiases[neuron] = 0.0;
+      curr->gradientBiases[o] /= samples;
+      curr->biases[o] += learning_rate * curr->gradientBiases[o];
+      curr->gradientBiases[o] = 0.0;
     }
   }
 }
@@ -132,7 +132,7 @@ void Network::train(int epochs, int samples, double* data, double* desired_data,
       }
 
       forwardPass(tdata);
-      loss += lossFunction(tdesired_data, Layers[nlayers - 1]->a_output, Layers[nlayers - 1]->numNeurons);
+      loss += squaredLoss(tdesired_data, Layers[nlayers - 1]->a_output, Layers[nlayers - 1]->outputSize);
     }
     if (epoch % 10000 == 0){
       printf("Epoch: %d, loss: %lf\n", epoch, loss / samples);

@@ -18,7 +18,7 @@ class Layer{
     double** gradientWeights;
     double* gradientBiases;
 
-    int numNeurons;
+    int outputSize;
     int inputSize;
 
     Layer(int, int);
