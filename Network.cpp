@@ -3,18 +3,21 @@
 
 #include <iostream>
 
+Network::Network(int* layout, int num_layers) {
+    nlayers = num_layers;
+    netInSize = layout[0];
+    netOutSize = layout[nlayers];
+    tdata = new double[netInSize];
+    tdesired_data = new double[netInSize];
+    Layers = new Layer*[nlayers];
 
-Network::Network(int* layout, int num_layers){
-  // layout has size num_layers + 1 to store netInSize and (numNeurons for each layer)
-  nlayers = num_layers; 
-  netInSize = layout[0];
-  netOutSize = layout[nlayers];
-  tdata = new double[netInSize];
-  tdesired_data = new double[netInSize];
-  Layers = new Layer*[nlayers]; 
-  for (int layer = 0; layer < nlayers; ++layer){
-    Layers[layer] = new Layer(layout[layer], layout[layer + 1]);
-  }
+    for (int layer = 0; layer < nlayers; ++layer) {
+        if (layer == nlayers - 1) {
+          Layers[layer] = new Layer(layout[layer], layout[layer + 1], new Sigmoid());
+        } else {
+          Layers[layer] = new Layer(layout[layer], layout[layer + 1], new ReLU());
+        }
+    }
 }
 
 double Network::squaredLoss(double* desired, double* netOut, int outputSize){
@@ -27,12 +30,10 @@ double Network::squaredLoss(double* desired, double* netOut, int outputSize){
 
 void Network::forwardPass(double* data){
   Layers[0]->forward(data);
-  Layers[0]->sigmoid();
   for (int layer = 1; layer < nlayers; ++layer){
     Layer* curr = Layers[layer];
     Layer* prev = Layers[layer - 1];
     curr->forward(prev->a_output);
-    curr->sigmoid();
   }
 }
 
@@ -68,39 +69,7 @@ void Network::backwardPass(){
   }
 }
 
-/*
-void Network::backwardPass(){
-  Layer* Out = Layers[nlayers - 1];
-  //calculate output layer deltas
-  for (int neuron = 0; neuron < Out->numNeurons; ++neuron){
-    double neuronActiv = Out->a_output[neuron];
-    Out->delta[neuron] = (tdesired_data[neuron] - neuronActiv);
-  }
-  //iterate each hidden layer
-  for (int layer = nlayers - 1; layer > 0; --layer){
-    Layer* curr = Layers[layer];
-    Layer* prev = Layers[layer - 1];
-    //calculate delta for prev layer
-    for (int neuron = 0; neuron < prev->numNeurons; ++neuron){
-      prev->delta[neuron] = 0;
-      for (int curr_neuron = 0; curr_neuron < curr->numNeurons; ++curr_neuron){
-        prev->delta[neuron] = curr->delta[curr_neuron] * curr->weights[curr_neuron][neuron];
-      }
-    }
-  }
-  //calculate gradients
-  for (int layer = nlayers - 1; layer > 0; --layer){
-    Layer* curr = Layers[layer];
-    for (int neuron = 0; neuron < curr->numNeurons; ++neuron){
-      curr->gradientBiases[neuron] = curr->delta[neuron] * curr->a_output[neuron] * (1.0 - curr->a_output[neuron]);
-      for (int inSize = 0; inSize < curr->inputSize; ++inSize){
-        curr->gradientWeights[neuron][inSize] = curr->delta[neuron] * Layers[layer-1]->a_output[inSize] * curr->a_output[neuron] * (1.0 - curr->a_output[neuron]);
-      }
-    }
-  }
-}
-*/
-  void Network::updateLayers(int samples, float learning_rate){
+void Network::updateLayers(int samples, float learning_rate){
   for (int layer = 0; layer < nlayers; ++layer){
     Layer* curr = Layers[layer];
     for (int o = 0; o < curr->outputSize; ++o){

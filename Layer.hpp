@@ -1,11 +1,8 @@
-#ifndef LAYER_H
-#define LAYER_H
+#ifndef LAYER_HPP
+#define LAYER_HPP
 
-template <typename T>
-T max(T a, T b){
-  if (a > b) return a;
-  return b;
-}
+#include "Activations.hpp"
+
 
 class Layer{
   public:
@@ -21,13 +18,11 @@ class Layer{
     int outputSize;
     int inputSize;
 
-    Activation activaton;
+    Activation* activaton;
 
-    Layer(int, int, Activation);
+    Layer(int, int, Activation*);
     void forward(double* input);
     void backward();
-    void relu();
-    void sigmoid();
 
     ~Layer();
 };
