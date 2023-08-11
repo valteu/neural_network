@@ -1,7 +1,9 @@
-#include "Network.hpp"
 #include <cmath>
 #include <iostream>
 #include <random>
+
+#include "Network.hpp"
+#include "Layer.hpp"
 
 float LEARNING_RATE = 0.5;
 int SAMPLES = 1000;
@@ -28,10 +30,23 @@ int main(){
     targets[i] = dataFunction(data[i]);
   }
 
-  //create network layout: 0. index = size of input, 1. index = number input neurons, 2. index = number second layer neurons, ... 
-  int layout[] = {1, 5, 5, 1};
+  //
+/*
+  Layer ** layout = new Layer*[4];
+
+  layout[0] = new ReLU(1, 128);
+  layout[1] = new ReLU(128, 128);
+  layout[2] = new ReLU(128, 128);
+  layout[3] = new ReLU(128, 1);
+  */
+  Layer* layout[4] = {
+    new ReLU(10, 128), // input layer
+    new ReLU(128, 128),  // first hidden layer
+    new ReLU(128, 128),  // second hidden layer
+    new Sigmoid(128, 1),  // output layer
+  };
   //create network with given layout
-  Network network = Network(layout, sizeof(layout) / sizeof(layout[0]) - 1);
+  Network network = Network(layout, 4);
   //train network
   network.train(EPOCHS, SAMPLES, data, targets, LEARNING_RATE); 
   //test network

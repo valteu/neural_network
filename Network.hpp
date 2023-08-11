@@ -8,7 +8,7 @@ class Network{
   Layer** Layers;
   double * tdata; 
   double * tdesired_data;
-  public: Network(int* layout, int num_layers);
+  public: Network(Layer** layout, int num_layers);
   double squaredLoss(double*, double*, int);
   void forwardPass(double*);
   void backwardPass();

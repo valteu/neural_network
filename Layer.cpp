@@ -1,15 +1,14 @@
 #include "Layer.hpp"
-#include "Activations.hpp"
 
 #include <iostream>
 #include <cmath>
 
 
-Layer::Layer(int inp_size, int out_size, Activation* _activaton)
-  : outputSize(out_size), inputSize(inp_size), activaton(_activaton){
+Layer::Layer(int inp_size, int out_size)
+  : outputSize(out_size), inputSize(inp_size){
 
-  f_output = new double[outputSize];
-  a_output = new double[outputSize];
+  pre_activation = new double[outputSize];
+  activation = new double[outputSize];
   delta = new double[outputSize];
 
   gradientBiases = new double[outputSize];
@@ -40,9 +39,8 @@ void Layer::forward(double* inputData){
     for (int i = 0; i < inputSize; ++i){
       temp += weights[i][o] * inputData[o];
     }
-    f_output[o] = temp + biases[o];
+    pre_activation[o] = temp + biases[o];
   }
-  activaton->forward(a_output, f_output, outputSize);
 }
 
 /*
@@ -72,8 +70,40 @@ Layer::~Layer(){
   delete[] weights;
   delete[] gradientWeights;
   delete[] biases;
-  delete[] f_output;
-  delete[] a_output;
+  delete[] pre_activation;
+  delete[] activation;
   delete[] delta;
   delete[] gradientBiases;
+}
+
+
+Linear::Linear(int inp_size, int out_size) : Layer(inp_size, out_size){}
+void Linear::activate() {
+    for (int i = 0; i < outputSize; ++i) {
+        activation[i] = pre_activation[i];
+    }
+}
+double Linear::derivative(double z) {
+    return 1.0;
+}
+
+
+ReLU::ReLU(int inp_size, int out_size) : Layer(inp_size, out_size){}
+void ReLU::activate() {
+    for (int i = 0; i < outputSize; ++i) {
+        activation[i] = std::max<double>(pre_activation[i], 0);
+    }
+}
+double ReLU::derivative(double z) {
+    return z > 0 ? 1 : 0;
+}
+
+Sigmoid::Sigmoid(int inp_size, int out_size) : Layer(inp_size, out_size){}
+void Sigmoid::activate() {
+    for (int o = 0; o < outputSize; ++o) {
+        activation[o] = sigmoid(pre_activation[o]);
+    }
+}
+double Sigmoid::derivative(double z) {
+    return sigmoid(z) * (1 - sigmoid(z));
 }

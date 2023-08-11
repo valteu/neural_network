@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -std=c++11
 TARGET = main
-SRCS = main.cpp Layer.cpp Network.cpp Activations.cpp
+SRCS = main.cpp Layer.cpp Network.cpp 
 OBJS = $(SRCS:.cpp=.o)
 
 .PHONY: all clean

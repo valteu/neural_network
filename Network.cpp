@@ -1,22 +1,17 @@
 #include "Network.hpp"
 #include "Layer.hpp"
-#include "Activations.hpp"
 #include <iostream>
 
-Network::Network(int* layout, int num_layers) {
+Network::Network(Layer** layout, int num_layers) {
     nlayers = num_layers;
-    netInSize = layout[0];
-    netOutSize = layout[nlayers];
+    netInSize = layout[0]->inputSize;
+    netOutSize = layout[nlayers-1]->outputSize;
     tdata = new double[netInSize];
     tdesired_data = new double[netInSize];
+    
     Layers = new Layer*[nlayers];
-
-    for (int layer = 0; layer < nlayers; ++layer) {
-        if (layer == nlayers - 1) {
-          Layers[layer] = new Layer(layout[layer], layout[layer + 1], new Sigmoid());
-        } else {
-          Layers[layer] = new Layer(layout[layer], layout[layer + 1], new ReLU());
-        }
+    for (int i = 0; i < nlayers; ++i){
+      Layers[i] = layout[i];
     }
 }
 
@@ -30,10 +25,12 @@ double Network::squaredLoss(double* desired, double* netOut, int outputSize){
 
 void Network::forwardPass(double* data){
   Layers[0]->forward(data);
+  Layers[0]->activate();
   for (int layer = 1; layer < nlayers; ++layer){
     Layer* curr = Layers[layer];
     Layer* prev = Layers[layer - 1];
-    curr->forward(prev->a_output);
+    curr->forward(prev->activation);
+    curr->activate();
   }
 }
 
@@ -41,7 +38,7 @@ void Network::backwardPass(){
   Layer* Out = Layers[nlayers - 1];
   //calculate output layer deltas
   for (int output = 0; output < Out->outputSize; ++output){
-    double neuronActive = Out->a_output[output];
+    double neuronActive = Out->activation[output];
     Out->delta[output] = 2 * (tdesired_data[output] - neuronActive) * neuronActive * (1 - neuronActive);
   }
   //iterate each hidden layer
@@ -51,7 +48,7 @@ void Network::backwardPass(){
     //calculate delta for prev layer
     for (int output = 0; output < prev->outputSize; ++output){
       prev->delta[output] = 0.0;
-      double prevNeuronActive = prev->a_output[output];
+      double prevNeuronActive = prev->activation[output];
       for (int curr_output = 0; curr_output < curr->outputSize; ++curr_output){
         prev->delta[output] += curr->delta[curr_output] * curr->weights[output][curr_output] * prevNeuronActive * (1 - prevNeuronActive);
       }
@@ -62,7 +59,7 @@ void Network::backwardPass(){
     Layer* curr = Layers[layer];
     for (int input = 0; input < curr->inputSize; ++input){
       for (int output = 0; output < curr->outputSize; ++output){
-        curr->gradientWeights[input][output] += curr->delta[output] * Layers[layer-1]->a_output[input];
+        curr->gradientWeights[input][output] += curr->delta[output] * Layers[layer-1]->activation[input];
         curr->gradientBiases[output] += curr->delta[output];
       }
     }
@@ -101,7 +98,7 @@ void Network::train(int epochs, int samples, double* data, double* desired_data,
       }
 
       forwardPass(tdata);
-      loss += squaredLoss(tdesired_data, Layers[nlayers - 1]->a_output, Layers[nlayers - 1]->outputSize);
+      loss += squaredLoss(tdesired_data, Layers[nlayers - 1]->activation, Layers[nlayers - 1]->outputSize);
     }
     if (epoch % 10000 == 0){
       printf("Epoch: %d, loss: %lf\n", epoch, loss / samples);
@@ -118,7 +115,7 @@ void Network::test(double* inputs, double* targets, int num){
       tests[netIn] = inputs[sample * netInSize + netIn];
     }
     forwardPass(tests);
-    printf("Test x = %lf, Network output = %lf, target = %lf\n", tests[0], Layers[nlayers - 1]->a_output[0], targets[sample]);
+    printf("Test x = %lf, Network output = %lf, target = %lf\n", tests[0], Layers[nlayers - 1]->activation[0], targets[sample]);
   }
 }
 
