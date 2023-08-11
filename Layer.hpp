@@ -21,7 +21,7 @@ class Layer{
     Layer(int, int);
     void forward(double* input);
     void backward();
-    virtual void active() = 0;
+    virtual void activate() = 0;
 
     ~Layer();
 };
