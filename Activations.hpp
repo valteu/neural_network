@@ -11,7 +11,8 @@ T max(T a, T b){
 
 class Activation {
 public:
-  virtual double* forward(double* a, double* f, int n) = 0;
+  Activation(){}
+  virtual double* forward(double* a, double* f, int n);
   virtual double derivative(double z);
   double sigmoid(double x){
     return 1.0 / (1.0 + exp(-x));
@@ -20,18 +21,21 @@ public:
 
 class Linear : public Activation {
 public:
+  Linear(){}
   double* forward(double* a, double* f, int n) override;
   double derivative(double z) override; 
 };
 
 class ReLU : public Activation {
 public:
+  ReLU(){}
   double* forward(double* a, double* f, int n) override;
   double derivative(double z) override; 
 };
 
 class Sigmoid : public Activation {
 public:
+  Sigmoid(){}
   double* forward(double* a, double* f, int n) override;
   double derivative(double z) override; 
 };

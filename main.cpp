@@ -1,6 +1,4 @@
-#include "Layer.hpp"
 #include "Network.hpp"
-#include "Activations.hpp"
 #include <cmath>
 #include <iostream>
 #include <random>

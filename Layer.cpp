@@ -1,4 +1,6 @@
 #include "Layer.hpp"
+#include "Activations.hpp"
+
 #include <iostream>
 #include <cmath>
 

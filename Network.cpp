@@ -1,6 +1,6 @@
 #include "Network.hpp"
 #include "Layer.hpp"
-
+#include "Activations.hpp"
 #include <iostream>
 
 Network::Network(int* layout, int num_layers) {
