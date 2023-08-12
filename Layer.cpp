@@ -43,24 +43,32 @@ void Layer::forward(double* inputData){
   }
 }
 
-/*
-void Layer::backward(bool first, double* targets, Layer* prev){
+
+void Layer::backward(bool first, double* targets, Layer* next){
+  // compute output Layer delta
   if (first){
     for (int o = 0; o < outputSize; ++o){
-      delta[o] = 2 * (targets[o] - a_output[o]) * activaton.derivative(prev->f_output[o]);
+      delta[o] = 2 * (targets[o] - activation[o]) * derivative(activation[o]);
     }
   }
-
+  //compute hidden Layer delta
   else{
     for (int o = 0; o < outputSize; ++o){
       delta[o] = 0.0;
-      for (int i = 0; i < inputSize; ++i){
-        
+      for (int i = 0; i < next->outputSize; ++i){
+        delta[o] += next->delta[i] * next->weights[o][i] * derivative(activation[o]); 
       }
     }
   }
+  // update gradients
+  for (int o = 0; o < outputSize; ++o){
+    gradientBiases[o] = delta[o];
+    for (int i = 0; i < inputSize; ++i){
+      gradientWeights[i][o] = delta[o] * next->activation[i];
+    }
+  }
 }
-  */
+
 
 Layer::~Layer(){
   for (int i = 0; i < inputSize; ++i){

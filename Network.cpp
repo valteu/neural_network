@@ -36,33 +36,9 @@ void Network::forwardPass(double* data){
 
 void Network::backwardPass(){
   Layer* Out = Layers[nlayers - 1];
-  //calculate output layer deltas
-  for (int output = 0; output < Out->outputSize; ++output){
-    double neuronActive = Out->activation[output];
-    Out->delta[output] = 2 * (tdesired_data[output] - neuronActive) * neuronActive * (1 - neuronActive);
-  }
-  //iterate each hidden layer
-  for (int layer = nlayers - 1; layer > 0; --layer){
-    Layer* curr = Layers[layer];
-    Layer* prev = Layers[layer - 1];
-    //calculate delta for prev layer
-    for (int output = 0; output < prev->outputSize; ++output){
-      prev->delta[output] = 0.0;
-      double prevNeuronActive = prev->activation[output];
-      for (int curr_output = 0; curr_output < curr->outputSize; ++curr_output){
-        prev->delta[output] += curr->delta[curr_output] * curr->weights[output][curr_output] * prevNeuronActive * (1 - prevNeuronActive);
-      }
-    }
-  }
-  //calculate gradients
-  for (int layer = nlayers - 1; layer > 0; --layer){
-    Layer* curr = Layers[layer];
-    for (int input = 0; input < curr->inputSize; ++input){
-      for (int output = 0; output < curr->outputSize; ++output){
-        curr->gradientWeights[input][output] += curr->delta[output] * Layers[layer-1]->activation[input];
-        curr->gradientBiases[output] += curr->delta[output];
-      }
-    }
+  Out->backward(true, tdesired_data, Layers[nlayers - 1]);
+  for (int layer = nlayers - 2; layer > 0; --layer){
+    Layers[layer]->backward(false, tdesired_data, Layers[layer + 1]);
   }
 }
 
