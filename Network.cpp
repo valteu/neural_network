@@ -36,9 +36,9 @@ void Network::forwardPass(double* data){
 
 void Network::backwardPass(){
   Layer* Out = Layers[nlayers - 1];
-  Out->backward(true, tdesired_data, Layers[nlayers - 1]);
+  Out->backward(true, tdesired_data, Layers[nlayers - 1], Layers[nlayers - 2]);
   for (int layer = nlayers - 2; layer > 0; --layer){
-    Layers[layer]->backward(false, tdesired_data, Layers[layer + 1]);
+    Layers[layer]->backward(false, tdesired_data, Layers[layer + 1], Layers[layer - 1]);
   }
 }
 

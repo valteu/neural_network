@@ -20,7 +20,7 @@ class Layer{
 
     Layer(int, int);
     void forward(double* input);
-    void backward(bool, double*, Layer*);
+    void backward(bool, double*, Layer*, Layer*);
     virtual void activate() = 0;
     virtual double derivative(double) = 0;
 

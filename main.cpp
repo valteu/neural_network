@@ -39,7 +39,7 @@ int main(){
   layout[2] = new ReLU(128, 128);
   layout[3] = new ReLU(128, 1);
   */
-  Layer* layout[4] = {
+  Layer* layout[3] = {
     new ReLU(1, 12), // input layer
    // new ReLU(128, 128),  // first hidden layer
     new ReLU(12, 12),  // second hidden layer

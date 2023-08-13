@@ -44,7 +44,7 @@ void Layer::forward(double* inputData){
 }
 
 
-void Layer::backward(bool first, double* targets, Layer* next){
+void Layer::backward(bool first, double* targets, Layer* next, Layer* prev){
   // compute output Layer delta
   if (first){
     for (int o = 0; o < outputSize; ++o){
@@ -64,7 +64,7 @@ void Layer::backward(bool first, double* targets, Layer* next){
   for (int o = 0; o < outputSize; ++o){
     gradientBiases[o] = delta[o];
     for (int i = 0; i < inputSize; ++i){
-      gradientWeights[i][o] = delta[o] * next->activation[i];
+      gradientWeights[i][o] = delta[o] * prev->activation[i];
     }
   }
 }
