@@ -28,7 +28,7 @@ Layer::Layer(int inp_size, int out_size)
 
   //initialize weights, biases and gradient vectors
   for (int i = 0; i < inputSize; ++i){
-    weights[i] = new double[inputSize];
+    weights[i] = new double[outputSize];
     gradientWeights[i] = new double[outputSize];
     for (int o = 0; o < outputSize; ++o){
       weights[i][o] = normal(0.0, 1.0 / sqrt(inputSize));

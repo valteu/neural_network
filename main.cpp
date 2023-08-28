@@ -5,10 +5,10 @@
 #include "Network.hpp"
 #include "Layer.hpp"
 
-float LEARNING_RATE = 0.01;
+float LEARNING_RATE = 0.1;
 int SAMPLES = 1000;
-int EPOCHS = 50000;
-int LAYERS = 3;
+int EPOCHS = 10000;
+int LAYERS = 4;
 
 double dataFunction(double x){ 
   return x;
@@ -34,8 +34,8 @@ int main(){
   //
   Layer* layout[LAYERS] = {
     new ReLU(1, 12), // input layer
-    new ReLU(12, 12),  // first hidden layer
-    //new ReLU(128, 12),  // second hidden layer
+    new ReLU(12, 128),  // first hidden layer
+    new ReLU(128, 12),  // second hidden layer
     new Sigmoid(12, 1),  // output layer
   };
   //create network with given layout
@@ -45,6 +45,8 @@ int main(){
   //test network
   double tests[] = {0, 0.1, 0.4, 0.6, 1.0, 0.1};
   network.test(tests, tests, 6);
-  //delete[] targets;
+
+  delete[] targets;
+  delete[] data;
   return 0;
 }

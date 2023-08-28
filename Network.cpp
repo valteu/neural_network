@@ -75,7 +75,7 @@ void Network::train(int epochs, int samples, double* data, double* desired_data,
       forwardPass(tdata);
       loss += squaredLoss(tdesired_data, Layers[nlayers - 1]->activation, Layers[nlayers - 1]->outputSize);
     }
-    if (epoch % 10000 == 0){
+    if (epoch % 1000 == 0){
       printf("Epoch: %d, loss: %lf\n", epoch, loss / samples);
     }
     backwardPass();
