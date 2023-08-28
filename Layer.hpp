@@ -2,6 +2,7 @@
 #define LAYER_HPP
 
 #include <cmath>
+#include <random>
 
 
 class Layer{

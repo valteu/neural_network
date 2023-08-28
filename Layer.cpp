@@ -2,7 +2,16 @@
 
 #include <iostream>
 #include <cmath>
+#include <random>
 
+double normal(double mean, double stddev){
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  // Create a normal distribution with the specified mean and standard deviation
+  std::normal_distribution<double> distribution(mean, stddev);
+  // Generate a random value from the distribution
+  return distribution(gen);
+}
 
 Layer::Layer(int inp_size, int out_size)
   : outputSize(out_size), inputSize(inp_size){
@@ -22,14 +31,14 @@ Layer::Layer(int inp_size, int out_size)
     weights[i] = new double[inputSize];
     gradientWeights[i] = new double[outputSize];
     for (int o = 0; o < outputSize; ++o){
-      weights[i][o] = (double)rand() / RAND_MAX * 2.0 - 1.0;
+      weights[i][o] = normal(0.0, 1.0 / sqrt(inputSize));
       gradientWeights[i][o] = 0.0;
     }
   }
 
   for (int o = 0; o < outputSize; ++o){
     gradientBiases[o] = 0;
-    biases[o] = (double)rand() / RAND_MAX * 2.0 - 1.0;
+    biases[o] = normal(0.0, 1.0 / sqrt(inputSize));
   }
 }
 

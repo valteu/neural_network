@@ -1,5 +1,4 @@
 #include "Network.hpp"
-#include "Layer.hpp"
 #include <iostream>
 
 Network::Network(Layer** layout, int num_layers) {
