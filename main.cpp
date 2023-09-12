@@ -8,10 +8,10 @@
 float LEARNING_RATE = 0.1;
 int SAMPLES = 1000;
 int EPOCHS = 10000;
-int LAYERS = 4;
+int LAYERS = 3;
 
 double dataFunction(double x){ 
-  return x;
+  return x*x;
 }
 
 //create and return array and fill it with doubles between 0 and 1
@@ -34,8 +34,8 @@ int main(){
   //
   Layer* layout[LAYERS] = {
     new ReLU(1, 12), // input layer
-    new ReLU(12, 128),  // first hidden layer
-    new ReLU(128, 12),  // second hidden layer
+    new ReLU(12, 12),  // first hidden layer
+  //  new ReLU(128, 12),  // second hidden layer
     new Sigmoid(12, 1),  // output layer
   };
   //create network with given layout

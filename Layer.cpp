@@ -46,7 +46,7 @@ void Layer::forward(double* inputData){
   for (int o = 0; o < outputSize; ++o){ //calculate cross product and add bias
     double temp = 0.0;
     for (int i = 0; i < inputSize; ++i){
-      temp += weights[i][o] * inputData[o];
+      temp += weights[i][o] * inputData[i];
     }
     pre_activation[o] = temp + biases[o];
   }
